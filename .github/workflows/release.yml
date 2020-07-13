@@ -124,7 +124,7 @@ jobs:
   deploy-docker:
     name: Build and publish docker containers
     runs-on: ubuntu-latest
-    needs: [lint-custom, lint-python, lint-tidy, lint-format, test]
+    needs: [cpp-lint, python-lint, test]
     strategy:
       matrix:
         arch: [amd64, i386, armv7, aarch64]
