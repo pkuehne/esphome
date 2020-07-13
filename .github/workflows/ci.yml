@@ -15,8 +15,6 @@ jobs:
     container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
