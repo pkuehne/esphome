@@ -15,6 +15,9 @@ jobs:
     container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          git remote
+          git branch
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
