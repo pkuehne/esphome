@@ -86,7 +86,7 @@ jobs:
           restore-keys: |
             esphome-pip-
       # Use per test platformio cache because tests have different platform versions
-      - name: Cache Platformio
+      - name: Cache ~/.platformio
         uses: actions/cache@v1
         with:
           path: ~/.platformio
@@ -105,7 +105,7 @@ jobs:
             test-pio-${{ matrix.test }}-
       - name: Set up environment
         run: script/setup
-  
+
       - run: esphome tests/${{ matrix.test }}.yaml compile
 
   deploy-docker:
