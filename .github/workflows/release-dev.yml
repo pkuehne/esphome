@@ -4,8 +4,6 @@ on:
   push:
     branches:
     - dev
-    # Testing
-    - gh-actions2
 
 jobs:
   lint-cpp:

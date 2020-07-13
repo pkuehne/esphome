@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [dev, beta, master, gh-actions2]
+    # On dev branch release-dev already performs CI checks
+    branches: [beta, master, gh-actions2]
   pull_request:
     types: [opened, reopened, synchronize]
     branches: [dev]
@@ -14,6 +15,8 @@ jobs:
     container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
