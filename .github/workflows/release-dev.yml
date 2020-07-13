@@ -85,13 +85,14 @@ jobs:
           key: esphome-pip-3.7-${{ hashFiles('setup.py') }}
           restore-keys: |
             esphome-pip-
+      # Use per test platformio cache because tests have different platform versions
       - name: Cache Platformio
         uses: actions/cache@v1
         with:
           path: ~/.platformio
-          key: test-home-platformio-${{ hashFiles('esphome/core_config.py') }}
+          key: test-home-platformio-${{ matrix.test }}-${{ hashFiles('esphome/core_config.py') }}
           restore-keys: |
-            test-home-platformio-
+            test-home-platformio-${{ matrix.test }}-
       # Cache the intermediary build files
       - name: Cache Test Build
         uses: actions/cache@v1
@@ -152,9 +153,9 @@ jobs:
             .
       - name: Log in to docker hub
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+        run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
       - run: docker push "${IMAGE}"
 
   deploy-docker-manifest:
@@ -165,11 +166,6 @@ jobs:
       run: |
         mkdir -p ~/.docker
         echo "{\"experimental\": \"enabled\"}" > ~/.docker/config.json
-    - name: Log in to docker hub
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
     - name: "Create the manifest"
       run: |
         REPO=esphome/esphome
@@ -180,4 +176,9 @@ jobs:
           ${REPO}-amd64:${tag} \
           ${REPO}-armv7:${tag} \
           ${REPO}-i386:${tag}
+    - name: Log in to docker hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
     - run: docker push ${REPO}:${tag}
