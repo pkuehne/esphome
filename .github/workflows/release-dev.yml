@@ -8,40 +8,24 @@ on:
     - gh-actions2
 
 jobs:
-  cpp-lint:
+  lint-cpp:
     runs-on: ubuntu-latest
+    container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - name: Cache pip modules
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: esphome-pip-3.8-${{ hashFiles('setup.py') }}
-          restore-keys: |
-            esphome-pip-
-      - name: Cache Platformio
-        uses: actions/cache@v1
-        with:
-          path: ~/.platformio
-          key: esphome-platformio
-      - name: Setup environment
-        run: |
-          script/setup
-          pio init --ide atom
-      - name: Lint Cpp Code
-        uses: esphome/esphome-lint-action@v1
-        with:
-          run: |
-            cd "${GITHUB_WORKSPACE}"
-            script/clang-tidy --all-headers --fix
-            script/clang-format -i
-            script/ci-suggest-changes
+      - name: Setup python environment
+        run: script/setup
+      - name: Setup platformio environment
+        run: pio init --ide atom
 
-  python-lint:
+      - name: Run clang-tidy
+        run: script/clang-tidy --all-headers --fix
+      - name: Run clang-format
+        run: script/clang-format -i
+      - name: Suggest changes
+        run: script/ci-suggest-changes
+
+  lint-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -56,14 +40,13 @@ jobs:
           key: esphome-pip-3.7-${{ hashFiles('setup.py') }}
           restore-keys: |
             esphome-pip-
-      - name: Setup environment
-        run: |
-          script/setup
+      - name: Setup python environment
+        run: script/setup
+
+      - name: Lint Custom
+        run: script/ci-custom.py
       - name: Lint Python
-        run: |
-          script/ci-custom.py
-          flake8 esphome
-          pylint esphome
+        run: script/lint-python
 
   test:
     runs-on: ubuntu-latest
@@ -79,7 +62,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.6'
+          python-version: '3.7'
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
@@ -92,16 +75,15 @@ jobs:
         with:
           path: ~/.platformio
           key: esphome-platformio
-      - name: Setup environment
-        run: |
-          script/setup
-      - run: |
-          esphome tests/${{ matrix.test }}.yaml compile
+      - name: Set up environment
+        run: script/setup
+  
+      - run: esphome tests/${{ matrix.test }}.yaml compile
 
   deploy-docker:
     name: Build and publish docker containers
     runs-on: ubuntu-latest
-    needs: [cpp-lint, python-lint, test]
+    needs: [lint-cpp, lint-python, test]
     strategy:
       matrix:
         arch: [amd64, i386, armv7, aarch64]
