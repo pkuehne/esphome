@@ -445,7 +445,7 @@ def parse_args(argv):
     parser_upload = subparsers.add_parser('upload', help='Validate the configuration '
                                                          'and upload the latest binary.')
     parser_upload.add_argument('--upload-port', help="Manually specify the upload port to use. "
-                                                     "For example /dev/cu.SLAB_USBtoUART." )
+                                                     "For example /dev/cu.SLAB_USBtoUART.")
 
     parser_logs = subparsers.add_parser('logs', help='Validate the configuration '
                                                      'and show all MQTT logs.')
