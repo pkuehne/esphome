@@ -34,6 +34,13 @@ jobs:
       - name: Set up platformio environment
         run: pio init --ide atom
 
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/ci-custom.json"
+          echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
+          echo "::add-matcher::.github/workflows/matchers/gcc.json"
+          echo "::add-matcher::.github/workflows/matchers/lint-python.json"
+          echo "::add-matcher::.github/workflows/matchers/python.json"
       - name: Run a quick lint over all changed files
         run: script/quicklint
       - name: Suggest changes
@@ -89,6 +96,11 @@ jobs:
       - name: Set up platformio environment
         run: pio init --ide atom
 
+      
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
+          echo "::add-matcher::.github/workflows/matchers/gcc.json"
       - name: Run clang-tidy
         run: script/clang-tidy --all-headers --fix --split-num 4 --split-at ${{ matrix.split }}
       - name: Suggest changes
@@ -114,6 +126,12 @@ jobs:
       - name: Set up python environment
         run: script/setup
 
+      
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/ci-custom.json"
+          echo "::add-matcher::.github/workflows/matchers/lint-python.json"
+          echo "::add-matcher::.github/workflows/matchers/python.json"
       - name: Lint Custom
         run: script/ci-custom.py
       - name: Lint Python
@@ -162,4 +180,9 @@ jobs:
       - name: Set up environment
         run: script/setup
 
+      
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/gcc.json"
+          echo "::add-matcher::.github/workflows/matchers/python.json"
       - run: esphome tests/${{ matrix.test }}.yaml compile
