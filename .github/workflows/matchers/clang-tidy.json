@@ -12,8 +12,9 @@
                     "message": 5
                 },
                 {
-                    "regexp": "^\\s*raise\\s(.*)\\(\\'(.*)\\'\\)$",
-                    "message": 2
+                    "regexp": "^^([^\\s].*)$$",
+                    "message": 1,
+                    "loop": true
                 }
             ]
         }

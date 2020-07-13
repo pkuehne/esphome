@@ -18,11 +18,11 @@ CONFIG_SCHEMA = cv.All(sensor.sensor_schema(UNIT_CELSIUS, ICON_THERMOMETER, 1).e
 
 
 def to_code(config):
-    hub = yield cg.get_variable(config[CONF_DALLAS_ID])
+    Hub = yield cg.get_variable(config[CONF_DALLAS_ID])
     if CONF_ADDRESS in config:
         address = config[CONF_ADDRESS]
-        rhs = hub.Pget_sensor_by_address(address, config.get(CONF_RESOLUTION))
+        rhs = Hub.Pget_sensor_by_address(address, config.get(CONF_RESOLUTION))
     else:
-        rhs = hub.Pget_sensor_by_index(config[CONF_INDEX], config.get(CONF_RESOLUTION))
+        rhs = Hub.Pget_sensor_by_index(config[CONF_INDEX], config.get(CONF_RESOLUTION))
     var = cg.Pvariable(config[CONF_ID], rhs)
     yield sensor.register_sensor(var, config)
