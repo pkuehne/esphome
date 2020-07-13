@@ -37,6 +37,7 @@ jobs:
         uses: esphome/esphome-lint-action@v1
         with:
           run: |
+            cd "${GITHUB_WORKSPACE}"
             script/quicklint
             script/ci-suggest-changes
 
@@ -69,6 +70,7 @@ jobs:
         uses: esphome/esphome-lint-action@v1
         with:
           run: |
+            cd "${GITHUB_WORKSPACE}"
             script/clang-tidy --all-headers --fix
             script/clang-format -i
             script/ci-suggest-changes
@@ -88,11 +90,6 @@ jobs:
           key: esphome-pip-3.7-${{ hashFiles('setup.py') }}
           restore-keys: |
             esphome-pip-
-      - name: Cache Platformio
-        uses: actions/cache@v1
-        with:
-          path: ~/.platformio
-          key: esphome-platformio
       - name: Setup environment
         run: |
           script/setup
