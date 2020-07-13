@@ -15,9 +15,9 @@ jobs:
     container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          git remote
-          git branch
+      # Also fetch dev branch so that we can check which files changed
+      - name: Fetch dev branch
+        run: git fetch origin dev
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
