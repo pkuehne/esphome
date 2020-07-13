@@ -80,6 +80,15 @@ jobs:
         with:
           path: ~/.platformio
           key: esphome-platformio
+      - name: Cache Test Build
+        uses: actions/cache@v1
+        with:
+          path: |
+            .pioenvs
+            .piolibdeps
+          key: test-pio-${{ matrix.test }}-${{ hashFiles('platformio.ini') }}
+          restore-keys: |
+            test-pio-${{ matrix.test }}-
       - name: Set up environment
         run: script/setup
   
@@ -117,7 +126,7 @@ jobs:
           echo "::set-env name=IMAGE::${build_to}:${tag}"
           echo "::set-env name=DOCKERFILE::${dockerfile}"
       - run: |
-          docker run --rm --privileged multiarch/qemu-user-static:register
+          docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
 
           docker build \
             --build-arg "BUILD_FROM=${BUILD_FROM}" \
