@@ -16,9 +16,9 @@ void Application::register_component_(Component *comp) {
     return;
   }
 
-  for (auto *c : this->components_) {
-    if (comp == c) {
-      ESP_LOGW(TAG, "Component already registered! (%p)", c);
+  for (auto *C : this->components_) {
+    if (comp == C) {
+      ESP_LOGW(TAG, "Component already registered! (%p)", C);
       return;
     }
   }
