@@ -70,6 +70,9 @@ jobs:
     # cpp lint job runs with esphome-lint docker image so that clang-format-*
     # doesn't have to be installed
     container: esphome/esphome-lint:dev
+    strategy:
+      matrix:
+        split: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v2
       # Cache platformio intermediary files (like libraries etc)
@@ -87,7 +90,7 @@ jobs:
         run: pio init --ide atom
 
       - name: Run clang-tidy
-        run: script/clang-tidy --all-headers --fix
+        run: script/clang-tidy --all-headers --fix --split-num 4 --split-at ${{ matrix.split }}
       - name: Suggest changes
         run: script/ci-suggest-changes
 
