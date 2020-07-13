@@ -13,9 +13,14 @@ jobs:
     container: esphome/esphome-lint:dev
     steps:
       - uses: actions/checkout@v2
-      - name: Setup python environment
-        run: script/setup
-      - name: Setup platformio environment
+      - name: Cache Platformio
+        uses: actions/cache@v1
+        with:
+          path: .pio
+          key: platformio-pio-${{ hashFiles('platformio.ini') }}
+          restore-keys: |
+            platformio-pio-
+      - name: Set up platformio environment
         run: pio init --ide atom
 
       - name: Run clang-tidy
@@ -40,7 +45,7 @@ jobs:
           key: esphome-pip-3.7-${{ hashFiles('setup.py') }}
           restore-keys: |
             esphome-pip-
-      - name: Setup python environment
+      - name: Set up python environment
         run: script/setup
 
       - name: Lint Custom
