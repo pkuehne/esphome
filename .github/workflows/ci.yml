@@ -19,8 +19,14 @@ jobs:
       - name: Fetch dev branch
         run: |
           git fetch origin dev:origin/dev
+          echo "Branches:"
           git branch -a
-          git merge-base origin/dev HEAD
+          echo "Remotes:"
+          git remote
+          echo "Tags:"
+          git tag
+          echo "Merge base:"
+          git merge-base refs/remotes/origin/dev HEAD
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
